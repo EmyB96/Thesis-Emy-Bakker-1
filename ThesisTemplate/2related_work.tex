@@ -1,0 +1,75 @@
+\section{Related Work} \label{sec:rel}
+% Deze sectie bestaat uit een aantal "blokken", waarin je per blok de relevante literatuur beschrijft. 
+
+% Neem alleen literatuur op die van belang is voor jouw onderzoeksvraag en deelvragen.
+
+% Typisch heb je 1 blok voor je hoofdvraag en per deelvraag \textbf{RQi} een blok. 
+
+\subsection{Social networks}
+The foundation of social network science is graph theory in which the nodes ($N$) of a graph represent all individuals in the network and edges represent the (social) connections between individuals. In the following, the words 'network' and 'graph' are used interchangeably. Hermsen \cite{HermsenEndtoend} and Otte and Rousseau \cite{otte_social_2002} describe some graph theory definitions as follows. The edges that are present in a network can be encoded in the form of a binary adjacency matrix $A \in \mathbb{R}^{N\times N}$. A non-zero value at $A_{ij}$ express the presence of edge $e_{ij}$, so the connection between node $i$ and node $j$.
+
+Within a network, each node has its own ego network. An ego is the individual representing the focal node. The ego-network is the local social network consisting of the connections between the acquaintances of the ego.
+
+There are two kinds of networks, \textit{undirected} and \textit{directed} networks. For an undirected graph, it is not important what the direction of a connection is. In practice, this means that when two individuals are connected, they both know each other. The connection between node $i$ and $j$ directly implies the existence of the connection between node $j$ and $i$, which results in a symmetric adjacency matrix ($A = A^{T}$). For a directed graph, the direction of a connection is important, which means that one the individual knows or 'follows' the other but not necessarily the other way around. So edge $e_{ij}$ is an ordered pair, representing the connection from node $i$ to node $j$ .
+
+To analyze social networks, there are several commonly used modeling indicators in the field of graph theory which definitions are found in the article of Albert and Barabási \cite{Albert2001StatisticalMO} and the reference documentation of the NetworkX software package \cite{hagberg2008exploring}:
+\begin{itemize}
+    \item[--] \textit{Node degree:} The number of edges adjacent to a node.
+    \item[--] \textit{Degree distribution:} The frequency distribution of node degrees. How many nodes are there in the network that have a particular degree.
+    \item[--] \textit{Density:} Number of edges present in the graph divided by the total number of possible edges. In a simple graph (that is, without self-edges (edges from a node to the same node) or multi-edges (more than one edge between two nodes)), the total number of possible edges can be calculated by $\frac{N(N - 1)}{2}$, where $N$ is the number of nodes. Density basically tells if the network is sparse or dense.
+    \item[--] \textit{Clustering coefficient:}  The number of links that are present amongst the neighbors of a node with respect to the total number of links that can be possible. This can be calculated for every node and the average clustering coefficient tells the amount of clustering present amongst the nodes in the network.
+    \item[--] \textit{Diameter:} The maximum shortest path or distance between any pair of nodes.
+\end{itemize}
+
+
+
+\subsection{Opinion dynamics}\label{opindyn}
+"Opinion dynamics are the processes that determine how opinions form and diffuse in society", as Menczer et al. \cite{menczer_fortunato_davis_2020} state. A widely used hypothesis about dynamics in social networks is the one of Granovetter \cite{Granovetter1973}: "whatever is to be diffused can reach a larger number of people, and traverse a greater social distance, when passed through weak ties rather than strong". Weak ties refer to acquaintances that interact less frequently but do create a link between otherwise distant nodes. However tempting it is to simply respect this hypothesis, Centola and Macy \cite{centola2007complex} found that it is undesirable to just generalize it for every situation. In their research, they found that long ties are not always able to spread complex opinions (or as they call it, contagions) and can even impede dissemination completely. They defined complex contagions as contagions that require assertion from more than one acquaintance. The conclusion is that, for complex contagions, it can be beneficial to have a network with more clustering, even if the network as a whole has a larger diameter. The authors came to this conclusion by applying the small world principle model from Watts and Strogatz \cite{watts1998collective}, which is able to randomly rewire a few local ties so that it reduces the mean distance between randomly chosen points.
+
+Based on the conclusion Centola and Macy \cite{centola2007complex} made, Centola \cite{centola2010spread} did an online social network experiment and again found that individual adoption strongly improved by users who received assertion from more than one acquaintance. Next to that, the spread went further and faster within a clustered network than in a random network.
+
+
+
+\subsection{Social circles}
+Within an ego-network (so indirectly within a full social network), each individual can possess social circles. Social circles represent 'groups' in which an individual can categorize his network. This can be based on a variety of properties and groups can overlap with each other. 
+
+Research in the field of social network science is mostly based on the aspects described in \ref{opindyn}. For example, weak ties versus strong ties and clustered networks versus random networks. But, in reality, the likelihood that opinions spread through specific links may depend on information that is often not considered in models of opinion dynamics and that is hard to infer from social structure alone. One example is information about the social circles that the endpoint nodes of a link belong to. As an intuition, in a social network, it is likely that a link between two individuals that only met each other long time ago is less influential (in terms of information sharing) than a link connecting two close friends that share many social circles. 
+
+To learn to identify social circles automatically, McAuley and Leskovec \cite{mcauley2012learning} created a machine learning model that incorporates user profile information into the network structure. They found that circles tend to overlap heavily and are hierarchically nested. Generally 25\% of the circles contained completely within another circle, 50\% overlap with another circle, and 25\% have no individuals in common with any other circle. 
+
+Social circles can be encoded in a \textit{weighted} graph wherein the weights $w_{ij}$ of the edges are for the number of circles in which both of the end nodes are located. In this way, value $w_{ij}$ at $A_{ij}$ expresses the strength of a connection so the higher value $w_{ij}$, the more hierarchically nested this edge is and higher probability of spreading it has \cite{HermsenEndtoend}.
+
+
+
+\subsection{Simulating opinion dynamics on networks}
+As Sayama \cite{sayama_2020} and Menczer et al. \cite{menczer_fortunato_davis_2020} explain in their books, it is possible to "add states to nodes and dynamically update those iteratively". In any type of models for influence diffusion or dynamics on networks, it can be assumed that a certain portion of the nodes are activated from the beginning. This can be encoded in the stated of nodes. In the case of this research, it means that active nodes already 'accepted' the opinion and inactive nodes can be activated according to certain rules, conditions and parameters. Those rules, conditions and parameters depend on the type of simulation model. Models can be divided into \textit{discrete} opinion models (individuals can have an integer number of opinions) and \textit{continuous} opinion models (opinions can vary fluently from one extreme to another).
+
+\subsubsection{Models\nopunct}\hfill \break
+Generally, a simulation model takes the following steps as described by Menczer et al. \cite{menczer_fortunato_davis_2020}:
+\begin{enumerate}
+    \item The opinion of each individual is randomly assigned to each node's state with an equal probability for each opinion.
+    \item The update of states happens for each node at the same time, this is called one iteration.
+    \item The simulation can result in two potential distributions:
+    \begin{itemize}
+        \item[--] A steady state wherein no opinions change anymore. This can conclude in either consensus, polarization or fragmentation (in the case of continuous opinion models).
+        \item[--] No steady state where each iteration opinions keep changing. In this case, certain features may still be able to stabilize in the long run.
+    \end{itemize}
+\end{enumerate}
+Next, some commonly used models will be discussed.
+\paragraph{Majority model}
+The \textit{majority model} can be classified as a discrete opinion dynamics model. Each individual changes the opinion to the opinion of the majority of its neighbors. When the case occurs where the number of neighbors with different opinions is equal then the opinion is updated with an equal probability for each opinion \cite{menczer_fortunato_davis_2020}.
+\paragraph{Diffusion model?} \cite{sayama_2020}
+\paragraph{Bounded-confidence model?}
+The \textit{bounded-confidfence model} can be classified as a continuous opinion dynamics model. For this model, it is assumed that two opinions can only affect each other if their difference is smaller than the confidence bound/tolerance.
+
+The update rule holds that it is checked for a node and one of its neighbours if their opinions differ less than the confidence bound. If so, their opinions shift to each other by an amount which is decided by some convergence parameter. If not, there is no change in their opinions. \cite{menczer_fortunato_davis_2020}
+\paragraph{Probability model/epidemic/sis/sir}
+jciod
+
+\subsubsection{Evaluation\nopunct}\hfill \break
+To analyze the results of the simulation models, there are several commonly used variables that can be computed and observed:
+\begin{itemize}
+    \item[--] The \textit{distribution of opinions} can be observed by creating a distribution of the states of all nodes after every (amount of) iteration(s).
+    \item[--] The \textit{average opinion} is the arithmetic average state over all nodes and can also be created after every (amount of) iteration(s). If there are two opinions, the model will start with an average around 0.5 since there is an equal probability for each opinion (one and zero). In a steady state, the average will become a specific value and if it concludes in consensus it will be either one or zero \cite{menczer_fortunato_davis_2020}.
+    \item[--] The \textit{exit probability} is the chance how likely it is that the simulation concludes in consensus to opinion one. This is calculated by the fraction of nodes that have opinion one at the start \cite{menczer_fortunato_davis_2020}.
+\end{itemize}
